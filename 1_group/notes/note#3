@@ -1,0 +1,272 @@
+
+ 
+개념 이론 정리 4주차
+
+코딩한 사람 : 최영민
+정리한 사람 : 윤선영
+
+————————————————————————————————
+예제 실습 3-2 Rectangle 클래스 만들기
+- 이 문제의 핵심 포인트
+	-> 내가 원하는 클래스를 생성할 수 있는지
+- 이 문제에 대한 접근 방법
+	-> main 함수에서 실행하기 전에 class 에서 필요한 메서드를 생성하고 main 함수 내에서 선언후 실행할 수있는지
+- 내가 짠 코드
+
+#include "iostream"
+using namespace std;
+
+class Rectangle {
+public:
+    int width;
+    int height;
+
+    int getArea();
+};
+
+int Rectangle::getArea() {
+    return width * height;
+}
+
+int main() {
+    Rectangle rect;
+    rect.width = 3;
+    rect.height = 5;
+    cout << "사각형의 면적은" << rect.getArea() << endl;
+}
+- 코드를 짤때 어려웠던 점
+	-> 클래스 선언에 대한 부분을 아직 정확하게 외우지 못해서 선언하는 부분의 방식은 참고하였음 (:: 범위지정 연산자가 익숙하지 않음)
+- 실행 결과
+  	->. 사각형의 면적은 15
+
+————————————————————————————————
+위임 생성자에 대해서 왜 쓰는가
+- 주제에 대해 각자 아는거 설명
+윤선영 : 위임생성자를 사용하면서 코드를 좀더 간결하게 만들 수 있으며 생성자 호출이 가능함
+최영민 : 정확하게는 모르겠으나 타겟 생성자에 복잡한 초기화 과정을 선언하고 위임생성자를 통해 호출하면서 좀 더 코드가 간결한것 처럼 보일 것 같다
+
+-> 교수님 말씀 : 생성자가 오버로딩이 가능한데 수많은 생성자 중에서 중복이 발생 할 수도 있는데 굳이 그 생성자에 대한 중복된 코드를 만들 이유가 없음
+
+————————————————————————————————
+예제 3-6 실습 Rectangle 클래스 만들기
+
+- 이 문제의 핵심 포인트
+	-> 클래스를 생성하고 생성자 초기화를 할 수 있는가, 함수가 생성자 안의 파라미터값이 같은지를 비교할 수있는가
+- 이 문제에 대한 접근 방법
+	-> Rectangle 클래스를 생성하고 각 조건에 맞게 초기화를 진행(rect1, rect2, rect3) / 그리고 각 변의 길이가 같은지를 확인하고 출력 
+- 내가 짠 코드
+#include "iostream"
+using namespace std;
+
+class Rectangle {
+public:
+    int width;
+    int height;
+
+    Rectangle();
+    Rectangle(int w,int h);
+    Rectangle(int length);
+
+    bool isSquare();
+};
+
+Rectangle::Rectangle() {
+    width=height=1;
+
+}
+
+Rectangle::Rectangle(int w,int h) {
+    width=w, height=h;
+
+}
+
+Rectangle::Rectangle(int length) {
+    width=height=length;
+
+}
+
+bool Rectangle::isSquare(){
+    if(width == height){
+        return true;
+    }
+    else
+        return false;
+}
+
+
+int main() {
+    Rectangle rect1;
+    Rectangle rect2(3,5);
+    Rectangle rect3(3);
+
+    if(rect1.isSquare()) cout << "rect1은 정사각형이다" << endl;
+    if(rect1.isSquare()) cout << "rect2은 정사각형이다" << endl;
+    if(rect1.isSquare()) cout << "rect3은 정사각형이다" << endl;
+
+}
+- 코드를 짤때 어려웠던 점
+	-> rect1의 경우 초기화값을 주지 않았는데 왜 1로 초기화를 했는지 이해하지 못했음 (아마 기본값이 1이어서 1로 초기화 한것이라고 추정) 
+	-> length 를 두는 이유를 찾지 못하겠음 -> 3차원이 아니기 때문에 정사각형의 조건을 판단하기에는 불필요한 요소라고 생각함
+
+- 실행 결과
+rect1은 정사각형이다 
+rect2은 정사각형이다
+rect3은 정사각형이다
+- 에러코드 and 이유
+	->에러 코드는 존재하지 않으나 프로그램의 의도와는 다르게 rect2도 정사각형이라고 나옴
+	-> rect2 괄호 안에 인자값을 주는데 오타 발생
+- 이거를 다시 한번 수정해서 컴파일
+rect1은 정사각형이다 
+rect3은 정사각형이다
+————————————————————————————————
+
+예제 3-8 지역 객체와 전역 객체의 생성 및 소멸 순서
+최영민 윤선영 예상
+
+전역객체 먼저 생성
+반지름 1000 생성
+반지름 2000 생성
+지역 객체 메인 먼저 생성
+반지름 1 생성 
+반지름 30 생성
+다음 지역 객체 생성
+반지름 100 생성
+반지름 200 생성
+역순으로 소멸되기때문에 
+반지름 200 소멸
+반지름 100 소멸
+반지름 30 소멸
+반지름 1 소멸
+반지름 2000 소멸
+반지름 1000 소멸
+
+————————————————————————————————
+예제 11번 코드를 선언부 구현부로 분리
+
+과정:
+생성자에 대한 파일을 만들고 
+그 생성자에 대한 초기화 파일을 따로 생성
+메인 함수에 실행시키고 싶은 로직을 구현
+두 파일을 컴파일 한후 링킹을 통해 하나의 실행파일로 완성
+
+Box.h
+#ifndef BOX_H
+#define BOX_H
+
+class Box {
+public:
+    int width, height;
+    char fill;
+
+public:
+    Box(int w, int h);
+    void setFill(char f);
+    void setSize(int w, int h);
+    void draw();
+};
+#endif
+———————————————————
+Box.cpp
+#include "Box.h"
+#include <iostream>
+using namespace std;
+
+Box::Box(int w, int h) {
+    setSize(w, h);
+    fill = '*';
+}
+
+void Box::setFill(char f) {
+    fill = f;
+}
+
+void Box::setSize(int w, int h) {
+    width = w;
+    height = h;
+}
+
+void Box::draw() {
+    for (int n = 0; n < height; n++) {
+        for (int m = 0; m < width; m++) {
+            cout << fill;
+        }
+        cout << endl;
+    }
+}
+————————————————————
+Main.cpp
+#include <iostream>
+#include "Box.h"
+using namespace std;
+
+int main() {
+    Box b(10, 2);
+    b.draw();
+    cout << endl;
+    b.setSize(7, 4);
+    b.setFill('^');
+    b.draw();
+
+    return 0;
+}
+이렇게 3가지 파일로 나눌 수 있습니다.
+
+중요!!
+->  include 중복이 발생할 수 있기 때문에 헤더 파일에 #ifndef 와 #endif 를 사용할 경우 중복 include 문제를 해결 가능
+
+———————————————————————
+예제 3-11 헤더 파일과 cpp 파일로 분리하기
+
+Adder.h
+#ifndef ADDER_H
+#define ADDER_H
+class Adder { // 덧셈 모듈 클래스
+int op1, op2;
+public:
+Adder(int a, int b);
+int process();
+};
+#endif
+————————————————————
+Calculator.h
+#ifndef CALCULATOR_H
+#define CALCULATOR_H
+class Calculator { // 계산기 클래스
+public:
+void run();
+};
+#endif
+
+————————————————————
+Adder.cpp
+#include "Adder.h"
+Adder::Adder(int a, int b) {
+op1 = a; op2 = b;
+}
+int Adder::process() {
+return op1 + op2;
+}
+
+———————————————————
+Calculator.cpp
+#include <iostream>
+using namespace std;
+#include "Calculator.h"
+#include "Adder.h"
+void Calculator::run() {
+cout << "두 개의 수를 입력하세요>>";
+int a, b;
+cin >> a >> b; // 정수 두 개 입력
+Adder adder(a, b); // 덧셈기 생성
+cout << adder.process(); // 덧셈 계산
+}
+
+———————————————————
+Main.cpp
+#include "Calculator.h"
+int main() {
+Calculator calc; // calc 객체 생성
+calc.run(); // 계산기 시작
+}
+
+이렇게 파일을 분리할 수 있습니다.
