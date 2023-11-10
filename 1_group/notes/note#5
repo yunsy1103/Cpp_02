@@ -1,0 +1,321 @@
+# 객체지향 프로그래밍 정리 10주차
+
+
+—
+
+상속 관계로 클래스의 간결화 사례
+
+클래스 간 공통된 기능으로 묶는것이 여러가지 장점을 가지고 있기 때문에 말하기, 먹기, 걷기, 잠자기 기능을 하나로 묶고 이것을 공부하기와 연구하기가 상속하고 추가적으로 일하기 기능을 가지고 있는 StudentWorker가 공부하기를 상속하고 가르치기 기능을 가지고 있는 Professor 가 연구하기를 상속하는 것이 가장 이상적이라고 생각합니다 이렇게 상속하게 되면 각 Student, StudentWorker, Researcher, Professor 클래스는 모두 필요한 기능을 갖출 수 있게 됩니다.
+
+—
+
+코딩한 사람 : 최영민
+정리한 사람 : 윤선영
+
+- 이 문제의 핵심 포인트
+상속의 개념을 활용하여 코드를 간결하게 하는 것이 이번 문제의 핵심
+- 이 문제에 대한 접근 방법
+    
+    공통된 부분을 하나의 클래스로 분리하고 남은 부분을 상속을 통해서 맴버를 접근하도록 사용
+    
+- 내가 짠 코드
+    
+    #include <iostream>
+    #include <string>
+    using namespace std;
+    
+    class Point {
+    int x, y; 
+    public:
+    void set(int x, int y) { this->x = x; this->y = y; }
+    void showPoint() {
+    cout << "(" << x << "," << y << ")" << endl;
+    }
+    };
+    
+    class ColorPoint : public Point { 
+    
+    string color;
+    public:
+    void setColor(string color) {this->color = color; }
+    void showColorPoint();
+    };
+    void ColorPoint::showColorPoint() {
+    cout << color << ":";
+    showPoint(); 
+    }
+    int main() {
+    Point p; 
+    ColorPoint cp; 
+    cp.set(3,4); 
+    cp.setColor("Red"); 
+    cp.showColorPoint(); 
+    }
+    
+- 코드를 짤때 어려웠던 점
+    
+    상속이라는 개념을 처음 접하게 되어 어색했지만 확장 가능성이랑 코드가 간결해진다는 점이 실감나게 되어 신기했습니다.
+    
+- 실행 결과
+    
+    Red:(3,4)
+    
+
+—
+
+- 업 캐스팅 (up-casting) 파생 클래스 포인터(자식 클래스 포인터가) 기본 클래스 포인터(부모 클래스 포인터)로 치환되는 것
+    
+    → 상속 관계에서 하위 클래스의 인스턴스를 상위 클래스의 참조 변수로 처리 하는 것
+    
+- 다운 캐스팅 (down -casting) : 기본 클래스의 포인터(부모 클래스 포인터)가 파생 클래스의 포인터(자식 클래스의 포인터)에 치환되는 것
+    
+    → 다운캐스팅을 진행 할 경우 강제 타입 변환이 반드시 필요 
+    
+    ** 자바와 다른 부분임 **
+    
+    —
+    
+    예제 8-2 protected 멤버에 대한 접근
+    
+    3,4,5,6이 오류인 이유
+    
+    전체 코드
+    
+    #include <iostream>
+    #include <string>
+    using namespace std;
+    class Point {
+    protected:
+    int x, y; //한 점 (x,y) 좌표값
+    public:
+    void set(int x, int y);
+    void showPoint();
+    };
+    void Point::set(int x, int y) {
+    this->x = x;
+    this->y = y;
+    }
+    void Point::showPoint() {
+    cout << "(" << x << "," << y << ")" << endl;
+    }
+    class ColorPoint : public Point {
+    string color;
+    public:
+    void setColor(string color);
+    void showColorPoint();
+    bool equals(ColorPoint p);
+    };
+    void ColorPoint::setColor(string color) {
+    this->color = color;
+    }void ColorPoint::showColorPoint() {
+    cout << color << ":";
+    showPoint(); // Point 클래스의 showPoint() 호출
+    }
+    bool ColorPoint::equals(ColorPoint p) {
+    if(x == p.x && y == p.y && color == p.color) // ①
+    return true;
+    else
+    return false;
+    }
+    int main() {
+    Point p; // 기본 클래스의 객체 생성
+    p.set(2,3); // ②
+    p.x = 5; // ③
+    p.y = 5; // ④
+    p.showPoint();
+    ColorPoint cp; // 파생 클래스의 객체 생성
+    cp.x = 10; // ⑤
+    cp.y = 10; // ⑥
+    cp.set(3,4);
+    cp.setColor("Red");
+    cp.showColorPoint();
+    ColorPoint cp2;
+    cp2.set(3,4);
+    cp2.setColor("Red");
+    cout << ((cp.equals(cp2))?"true":"false"); // ⑦
+    }
+    
+    → 3, 4 번은 x,y가 protected멤버로 선언되어 있으므로 객체 외부에서 직접 접근이 불가능하기 때문에 오류 발생
+    
+    → 5번과 6번은 이미 상속받은 멤버를 중복해서 선언하려고 시도하고 있기 때문에 오류가 발생
+    
+    오류를 수정한 전체 코드
+    
+    #include <iostream>
+    #include <string>
+    using namespace std;
+    
+    class Point {
+    protected:
+    int x, y;
+    public:
+    void set(int x, int y);
+    void showPoint();
+    };
+    
+    void Point::set(int x, int y) {
+    this->x = x;
+    this->y = y;
+    }
+    
+    void Point::showPoint() {
+    cout << "(" << x << "," << y << ")" << endl;
+    }
+    
+    class ColorPoint : public Point {
+    string color;
+    public:
+    void setColor(string color);
+    void showColorPoint();
+    bool equals(ColorPoint p);
+    };
+    
+    void ColorPoint::setColor(string color) {
+    this->color = color;
+    }
+    
+    void ColorPoint::showColorPoint() {
+    cout << color << ":";
+    showPoint();
+    }
+    
+    bool ColorPoint::equals(ColorPoint p) {
+    if(x == p.x && y == p.y && color == p.color) // ①
+    return true;
+    else
+    return false;
+    }
+    
+    int main() {
+    Point p;
+    p.set(2,3);                                                                            p.showPoint();
+    
+    ```
+    ColorPoint cp;
+    cp.set(10, 10);
+    cp.setColor("Red");
+    cp.showColorPoint();
+    
+    ColorPoint cp2;
+    cp2.set(3,4);
+    cp2.setColor("Red");
+    
+    cout << ((cp.equals(cp2)) ? "true" : "false");
+    return 0;
+    
+    ```
+    
+    }
+    
+    ---
+    
+    예제 8-4 private 상속 사례
+    
+    #include <iostream>
+    using namespace std;
+    class Base {
+    int a;
+    protected:
+    void setA(int a) { this->a = a; }
+    public:
+    void showA() { cout << a; }
+    };
+    class Derived : private Base {
+    int b;
+    protected:
+    void setB(int b) { this->b = b; }
+    public:
+    void showB() { cout << b; }
+    };
+    
+    int main() {
+    Derived x;
+    x.a = 5; // ①
+    x.setA(10); // ②
+    x.showA(); // ③
+    x.b = 10; // ④
+    x.setB(10); // ⑤
+    x.showB(); // ⑥
+    }
+    
+    컴파일 오류가 발생하는 지점 
+    
+    → 1,2,3,4,5
+    
+    컴파일 오류가 발생하는 이유
+    
+    1 -> Derived 클래스에서는 Base 클래스의 private 멤버에 직접 접근할 수 없기 때문에 컴파일 오류가 발생함
+    
+    2->Derived 클래스에서 Base 클래스의 멤버 함수를 호출할 때에도 private로 상속받았기 때문에 접근이 불가능 하므로 컴파일 오류가 발생함 
+    
+    3->showA 함수도 Base 클래스의 public 멤버 함수이지만, Derived 클래스에서 Base 클래스의 멤버 함수를 호출할 수 없기 때문에 컴파일 오류가 발생함
+    
+     4->private 멤버는 해당 클래스 내부에서만 접근 가능함
+    
+    5->setB 함수는 Derived 클래스의 protected 멤버 함수로 선언되어 있음 그러나 Derived 클래스에서도 private로 상속받았기 때문에 접근이 불가능함 따라서 컴파일 오류 발생
+    
+    ---
+    
+    예제 8-6 상속이 중첩될 때 접근 지정 사례
+    
+    #include <iostream>
+    using namespace std;
+    class Base {
+    int a;
+    protected:
+    void setA(int a) { this->a = a; }
+    public:
+    void showA() { cout << a; }
+    };
+    class Derived : protected Base {
+    int b;
+    protected:
+    void setB(int b) { this->b = b; }
+    public:
+    void showB() { cout << b; }
+    };int main() {
+    Derived x;
+    x.a = 5; // ①
+    x.setA(10); // ②
+    x.showA(); // ③
+    x.b = 10; // ④
+    x.setB(10); // ⑤
+    x.showB(); // ⑥
+    }
+    
+    #include <iostream>
+    using namespace std;
+    class Base {
+    int a;
+    protected:
+    void setA(int a) { this->a = a; }
+    public:
+    void showA() { cout << a; }
+    };
+    class Derived : private Base {
+    int b;
+    protected:
+    void setB(int b) { this->b = b; }
+    public:
+    void showB() {
+    setA(5); // ①
+    showA(); // ②
+    cout << b;
+    }
+    };class GrandDerived : private Derived {
+    int c;
+    protected:
+    void setAB(int x) {
+    setA(x); // ③
+    showA(); // ④
+    setB(x); // ⑤
+    }
+    };
+    
+    컴파일 오류가 발생하는 부분
+    
+    → 3, 4번
+    
+    컴파일 오류가 발생하는 이유
+    
+    → GrandDerived 클래스에서 private 상속을 받은 Derived 클래스의 멤버 함수와 변수들이 GrandDerived 클래스 내에서 접근이 불가능하기 때문  따라서 GrandDerived 클래스에서는 Derived 클래스의 멤버들을 직접 호출할 수 없음. 코드를 수정하려면 private 상속을 protected 상속으로 변경하거나, Derived 클래스에서 필요한 함수를 public으로 선언해야 함
