@@ -1,0 +1,295 @@
+<Shape.h>
+
+#ifndef SHAPE_H
+#define SHAPE_H
+
+class Shape {
+    Shape* next;
+
+protected:
+    virtual void draw() = 0;
+
+public:
+    Shape();
+    virtual ~Shape();
+    Shape* add(Shape* p);
+    void paint();
+    Shape* getNext();
+};
+
+#endif 
+
+—————————————————
+<Line.h>
+
+#ifndef LINE_H
+#define LINE_H
+
+#include "Shape.h"
+
+class Line : public Shape {
+protected:
+    void draw() override;
+
+public:
+    Line();
+};
+
+#endif 
+
+————————————————
+<Circle.h>
+
+#ifndef CIRCLE_H
+#define CIRCLE_H
+
+#include "Shape.h"
+
+class Circle : public Shape {
+protected:
+    void draw() override;
+
+public:
+    Circle();
+};
+
+#endif 
+
+————————————————
+<Rectangle.h>
+
+#ifndef RECTANGLE_H
+#define RECTANGLE_H
+
+#include "Shape.h"
+
+class Rectangle : public Shape {
+protected:
+    void draw() override;
+
+public:
+    Rectangle();
+};
+
+#endif 
+
+———————————————————
+UI.h
+
+#ifndef UI_H
+#define UI_H
+
+class UI {
+public:
+    static int getMenu();
+    static int getShapeTypeToInsert();
+    static int getShapeIndexToDelete();
+};
+
+#endif 
+
+———————————————————
+<GraphicEditor.h>
+
+#ifndef GRAPHIC_EDITOR_H
+#define GRAPHIC_EDITOR_H
+
+#include "Shape.h"
+
+class GraphicEditor {
+    Shape* pStart;
+    Shape* pLast;
+
+public:
+    GraphicEditor();
+    void insertItem(int type);
+    void deleteItem(int index);
+    void show();
+    void run();
+};
+
+#endif 
+
+———————————————————
+<Shape.cpp>
+
+#include "Shape.h"
+
+Shape::Shape() : next(nullptr) {}
+
+Shape::~Shape() {}
+
+Shape* Shape::add(Shape* p) {
+    this->next = p;
+    return p;
+}
+
+void Shape::paint() {
+    draw();
+}
+
+Shape* Shape::getNext() {
+    return next;
+}
+
+————————————————————
+<Line.cpp>
+
+#include "Line.h"
+#include <iostream>
+
+Line::Line() {}
+
+void Line::draw() {
+    std::cout << "Line" << std::endl;
+}
+
+————————————————————
+<Circle.cpp>
+
+#include "Circle.h"
+#include <iostream>
+
+Circle::Circle() {}
+
+void Circle::draw() {
+    std::cout << "Circle" << std::endl;
+}
+
+———————————————————
+<Rectangle.cpp>
+
+#include "Rectangle.h"
+#include <iostream>
+
+Rectangle::Rectangle() {}
+
+void Rectangle::draw() {
+    std::cout << "Rectangle" << std::endl;
+}
+
+———————————————————
+<UI.cpp>
+
+#include "UI.h"
+#include <iostream>
+
+int UI::getMenu() {
+    int key;
+    std::cout << "삽입:1, 삭제:2, 모두보기:3, 종료:4 >>";
+    std::cin >> key;
+    return key;
+}
+
+int UI::getShapeTypeToInsert() {
+    int key;
+    std::cout << "선:1, 원:2, 사각형:3 >>";
+    std::cin >> key;
+    return key;
+}
+
+int UI::getShapeIndexToDelete() {
+    int key;
+    std::cout << "삭제하고자 하는 도형의 인덱스 >>";
+    std::cin >> key;
+    return key;
+}
+
+———————————————————
+<GraphicEditor.cpp>
+
+#include "GraphicEditor.h"
+#include "UI.h"
+#include "Line.h"
+#include "Circle.h"
+#include "Rectangle.h"
+
+GraphicEditor::GraphicEditor() : pStart(nullptr), pLast(nullptr) {}
+
+void GraphicEditor::insertItem(int type) {
+    Shape* p = nullptr;
+    switch (type) {
+        case 1:
+            p = new Line();
+            break;
+        case 2:
+            p = new Circle();
+            break;
+        case 3:
+            p = new Rectangle();
+            break;
+        default:
+            break;
+    }
+    if (pStart == nullptr) {
+        pStart = p;
+        pLast = p;
+        return;
+    }
+    pLast->add(p);
+    pLast = pLast->getNext();
+}
+
+void GraphicEditor::deleteItem(int index) {
+    Shape* pre = pStart;
+    Shape* tmp = pStart;
+    if (pStart == nullptr) {
+        std::cout << "도형이 없습니다!" << std::endl;
+        return;
+    }
+    for (int i = 1; i < index; i++) {
+        pre = tmp;
+        tmp = tmp->getNext();
+    }
+    if (tmp == pStart) {
+        pStart = tmp->getNext();
+        delete tmp;
+    } else {
+        pre->add(tmp->getNext());
+        delete tmp;
+    }
+}
+
+void GraphicEditor::show() {
+    Shape* tmp = pStart;
+    int i = 1;
+    while (tmp != nullptr) {
+        std::cout << i++ << ": ";
+        tmp->paint();
+        tmp = tmp->getNext();
+    }
+}
+
+void GraphicEditor::run() {
+    std::cout << "그래픽 에디터입니다." << std::endl;
+    int menu, index, type;
+    while (true) {
+        menu = UI::getMenu();
+        switch (menu) {
+            case 1:
+                type = UI::getShapeTypeToInsert();
+                insertItem(type);
+                break;
+            case 2:
+                index = UI::getShapeIndexToDelete();
+                deleteItem(index);
+                break;
+            case 3:
+                show();
+                break;
+            default:
+                return;
+        }
+    }
+}
+—————————————————————
+<main.cpp>
+
+#include "GraphicEditor.h"
+
+int main() {
+    GraphicEditor graphicEditor;
+    graphicEditor.run();
+
+    return 0;
+}
