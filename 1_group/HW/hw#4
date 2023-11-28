@@ -1,0 +1,171 @@
+<CoffeeMachine.h>
+
+
+#pragma once
+#include <iostream>
+#include "Material.h"
+using namespace std;
+
+
+class CoffeeMachine : public Material{
+public:
+    CoffeeMachine(int Coffee=3 ,int Sugar=3, int Water=3, int Cup=3, int Cream=3):Material(){
+
+    }
+    void Show_Machine_State();
+    void run();
+};
+
+<CoffeeMachine.cpp>
+#include "CoffeeMachine.h"
+#include <iostream>
+using namespace std;
+
+
+    void CoffeeMachine::Show_Machine_State(){
+        cout << "Coffee ";
+        Count_star(Coffee);
+        cout << endl;
+        cout << "Sugar ";
+        Count_star(Sugar);
+        cout << endl;
+        cout << "Cream ";
+        Count_star(Cream);
+        cout << endl;
+        cout << "Water "  ;
+        Count_star(Water);
+        cout << endl;
+        cout << "Cup ";
+        Count_star(Cup);
+        cout << endl;
+        
+    }
+    void CoffeeMachine::run(){
+        cout << "----- 명품 자판기 켭니다.-----" << endl;
+        Show_Machine_State();
+  
+        int num;
+        while (true) {
+            cout << "보통커피:0 설탕 커피:1 블랙커피:2 채우기:3 종료:4 >>";
+            cin >> num;
+            switch (num) {
+                case 0:
+                    cout <<"맛있는 보통커피 나왔습니다!" <<endl;
+                    NormalCoffee();
+                    Show_Machine_State();
+                    break;
+                case 1:
+                    cout <<"맛있는 설탕커피 나왔습니다!" <<endl;
+                    SugarCoffee();
+                    Show_Machine_State();
+                    break;
+                case 2:
+                    cout <<"맛있는 블랙커피 나왔습니다!" <<endl;
+                    BlackCoffee();
+                    Show_Machine_State();
+                    break;
+                case 3:
+                    cout <<"모든 통을 채웁니다!" <<endl;
+                    refillMaterial();
+                    Show_Machine_State();
+                    break;
+                    
+                case 4:
+                    exit(0);
+                    
+            }
+        }
+    }
+
+
+
+<Material.h>
+
+#pragma once
+#include <iostream>
+using namespace std;
+
+
+
+class Material{
+public:
+    int Coffee;
+    int Sugar;
+    int Water;
+    int Cup;
+    int Cream;
+
+    Material(int Coffee=3 ,int Sugar=3, int Water=3, int Cup=3,int Cream=3){
+        this->Coffee = Coffee;
+        this->Sugar = Sugar;
+        this->Water = Water;
+        this->Cup = Cup;
+        this->Cream = Cream;
+    }
+    void NormalCoffee();
+    void SugarCoffee();
+    void BlackCoffee();
+
+    void refillMaterial();
+
+    void Count_star(int star);
+
+
+};
+
+<Material.cpp>
+#include "Material.h"
+#include <iostream>
+using namespace std;
+
+void Material::NormalCoffee(){
+        this->Coffee--;
+        this->Water--;
+        this->Cup--;
+        this->Cream--;
+    }
+    void  Material::SugarCoffee(){
+        this->Coffee--;
+        this->Sugar--;
+        this->Water--;
+        this->Cup--;
+    }
+    void  Material::BlackCoffee(){
+        this->Coffee--;
+        this->Water--;
+        this->Cup--;
+        
+    }
+    void  Material::refillMaterial(){
+        this->Coffee=3;
+        this->Sugar=3;
+        this->Water=3;
+        this->Cup=3;
+        this->Cream=3;
+    }
+    void Material:: Count_star(int star){
+        cout << "\t";
+        for(int i=0;i<star;i++){
+            cout << '*';
+        }
+        cout << " ";
+    }
+
+<main.cpp>
+#include <iostream>
+#include <string>
+#include <ctime>
+#include <cstdlib>
+#include "CoffeeMachine.h"
+#include "Material.h"
+using namespace std;
+
+
+
+int main() {
+    CoffeeMachine a;
+    a.run();
+    
+    return 0;
+}
+
