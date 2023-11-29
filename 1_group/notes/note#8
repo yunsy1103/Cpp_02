@@ -1,0 +1,313 @@
+# 객체지향 프로그래밍 정리 13주차
+
+---
+
+코딩한 사람 : 윤선영
+정리한 사람 : 최영민
+
+예제 11-1  ostream 멤버 함수를 이용한 문자 출력
+
+- 이 문제의 핵심 포인트
+cout.put을 사용하여 문자를 화면에 출력하는 것을 보여주는 예시
+- 이 문제에 대한 접근 방법
+    
+    iostream을 선언하고 cout.put을 이용하여 원하는 문자를 출력
+    
+- 내가 짠 코드
+#include <iostream>
+using namespace std;
+    
+    int main() {
+      cout.put('H');
+      cout.put('i');
+      cout.put(33);
+      cout.put('\n');
+     
+      cout.put('C').put('+').put('+').put(' ');
+    
+    char str[]="I love programming";
+      cout.write(str, 6)
+    }
+    
+- 실행 결과
+Hi!
+C++ I love
+
+---
+
+예제 11-2 get()과 get(char&)을 이용한 한 줄의 문자 읽기
+
+- 이 문제의 핵심 포인트
+get과 get(char&)를 이용하여 문자 읽기
+- 이 문제에 대한 접근 방법
+    
+    get()과 get(char&)에 대한 차이점을 이해하고 호출하는 것
+    
+- 내가 짠 코드
+#include <iostream>
+using namespace std;
+    
+    void get1() {
+      cout << "cin.get()로 <Enter> 키까지 입력 받고 출력합니다>>";
+      int ch;
+      while((ch = cin.get()) != EOF) {
+      cout.put(ch);
+      if(ch == '\n')
+      break;
+      }
+    }
+    
+    void get2() {
+      cout << "cin.get(char&)로 <Enter> 키까지 입력 받고 출력합니다>>";
+      char ch;
+      while(true) {
+      cin.get(ch);
+      if(cin.eof()) break;
+      cout.put(ch);
+      if(ch == '\n') 
+      break;
+      }
+    }
+    
+    int main() {
+      get1();
+      get2();
+    }
+    
+- 코드를 짤때 어려웠던 점
+    
+    main함수만 보고 나머지 함수들을 안보고 구현해보는 것이 생각보다 쉽지 않았음
+    
+- 실행 결과
+cin.get()로 <Enter> 키까지 입력 받고 출력합니다>>Do you love C++?
+Do you love C++?
+cin.get(char&)로 <Enter> 키까지 입력 받고 출력합니다>>Yes, I do.
+Yes, I do.
+
+---
+
+예제 11-4 getline()으로 한 줄 단위로 문장 읽기
+
+- 이 문제의 핵심 포인트
+getline()을 이용하여 문장 읽기
+- 이 문제에 대한 접근 방법
+    
+    getline()을 이용하여 한줄 단위로 문장을 읽고 출력  →getline()안에 입력받을 배열과 크기를 지정해주어야 함
+    
+- 내가 짠 코드
+#include <iostream>
+using namespace std;
+    
+    int main() {
+      char line[80];
+      cout << "cin.getline() 함수로 라인을 읽습니다." << endl;
+      cout << "exit를 입력하면 루프가 끝납니다." << endl;
+    
+    int no = 1; // 라인 번호
+      while(true) {
+      cout << "라인 " << no << " >> ";
+      cin.getline(line, 80);
+      if(strcmp(line, "exit") == 0)
+      break;
+      cout << "echo --> ";; 
+      cout << line << endl;
+      no++;
+      }
+    }
+    
+- 실행 결과
+cin.getline() 함수로 라인을 읽습니다.
+exit를 입력하면 루프가 끝납니다.
+라인 1 >> It's now or never.
+echo —> It's now or never.
+라인 2 >> Come hold me tight.
+echo —> Come hold me tight.
+라인 3 >> Kiss me my darling, be mine tonight.
+echo —> Kiss me my darling, be mine tonight.
+라인 4 >> 엘비스 프레슬리 노래입니다.
+echo —> 엘비스 프레슬리 노래입니다.
+라인 5 >> exit
+
+---
+
+예제 11-8 매개 변수를 가진 조작자 사용 예
+
+- 이 문제의 핵심 포인트
+매개 변수를 가진 조작자를 사용할 수 있는지
+- 이 문제에 대한 접근 방법
+조작자를 사용하여 일정 입력값에 대한 출력을 설정
+- 내가 짠 코드
+#include <iostream>
+#include <iomanip>
+using namespace std;
+    
+    int main() {
+      cout << showbase;
+     
+      cout << setw(8) << "Number";
+      cout << setw(10) << "Octal";
+      cout << setw(10) << "Hexa" << endl;
+    
+    for(int i=0; i<50; i+=5) {
+      cout << setw(8) << setfill('.') << dec << i;
+      cout << setw(10) << setfill(' ') << oct << i;
+      cout << setw(10) << setfill(' ') << hex << i << endl;
+      }
+    }
+    
+- 실행 결과
+    
+    Number Octal  Hexa
+    .......0       0 0
+    .......5       05     0x5
+    ......10      012    0xa
+    ......15      017    0xf
+    ......20     024    0x14
+    ......25     031     0x19
+    ......30     036    0x1e
+    ......35     043    0x23
+    ......40     050    0x28
+    ......45     055    0x2d
+    
+
+---
+
+예제 11-9 Point 객체를 스트림에 출력하는 << 연산자 작성 
+
+- 이 문제의 핵심 포인트
+클래스와 연산자 오버로딩을 활용하여 문제에 접근한다
+- 이 문제에 대한 접근 방법
+클래스를 설게하고 생성자 정의 후 operator<< 함수를 오버로딩하여 클래스 객체 출력하도록 정의함
+- 내가 짠 코드
+#include <iostream>
+using namespace std;
+    
+    class Point {
+      int x, y;
+    public: 
+      Point(int x=0, int y=0) {
+      this->x = x;
+      this->y = y;
+      }
+      friend ostream& operator << (ostream& stream, Point a);
+    };
+    
+    ostream& operator << (ostream& stream, Point a) {
+      stream << "(" << a.x << "," << a.y << ")";
+      return stream;
+    }
+    
+    int main() {
+      Point p(3,4);
+      cout << p << endl;
+    
+    Point q(1,100), r(2,200);
+      cout << q << r < endl;
+    }
+    
+- 실행 결과
+    
+    (3,4)
+    (1,100)(2,200)
+    
+- friend를 사용해야 하는 이유
+    
+     friend ostream& operator << (ostream& stream, Point a); 부분에서 friend가 사용되었는데 friend를 사용하지 않을 경우 해당 멤버 변수에 접근 할 수가 없기 때문에 friend를 사용해야 함
+    
+    C++에서 클래스의 private 멤버 변수에 접근하기 위해서는 일반적으로 해당 클래스의 멤버 함수를 사용 그러나 이 경우에는 operator<< 함수가 클래스의 외부에 정의되어 있기 때문에 클래스의 멤버 함수로 사용할 수 없음 따라서 friend 키워드를 사용하여 이 함수가 Point 클래스의 private 멤버에 접근할 수 있도록 허용
+    
+
+---
+
+예제 11-11 Point 객체를 입력받는 >> 연산자 작성
+
+- 이 문제의 핵심 포인트
+    
+    연산자를 사용하여 Point 객체를 입력 받기
+    
+- 이 문제에 대한 접근 방법
+    
+    사용자 지정 Point 객체를 입력받는 >> 연산자를 작성하여 cin>>p;가 성립되도록 함
+    
+- 내가 짠 코드
+#include <iostream>
+using namespace std;
+    
+    class Point {
+      int x, y;
+    public: 
+      Point(int x=0, int y=0) {
+      this->x = x;
+      this->y = y;
+      }
+      friend istream& operator >> (istream& ins, Point &a);
+      friend ostream& operator << (ostream& stream, Point a);
+    };
+    
+    istream& operator >> (istream& ins, Point &a) {
+      cout << "x 좌표>>";
+      ins >> a.x;
+      cout << "y 좌표>>";
+      ins >> a.y;
+      return ins;
+    }
+    ostream& operator << (ostream& stream, Point a) {
+      stream << "(" << a.x << "," << a.y << ")";
+      return stream;
+    }
+    
+    int main() {
+      Point p;
+      cin >> p; 
+      cout << p;
+    
+- 실행 결과
+x 좌표>>100
+y 좌표>>200
+(100,200)
+
+---
+
+- 의문점
+    
+    → 윤선영 : 사용자 정의 조작자를 굳이 사용해야 하는 이유가 무엇인지 궁금함
+    
+    최영민: 사람들이 코딩하다 보면 c++에서 제공하는 것 이외의 기능을 사용할 때가 있을텐데 그때 사용할 것이라 예상
+    
+    구글링 결과 
+    
+    1. **출력 형식 지정**: 사용자 정의 조작자를 사용하면 출력을 특정 형식으로 조작할 수 있음 예를 들어, 소수점 이하 자릿수를 지정하거나 특정한 포맷을 사용하여 숫자를 출력할 수 있음
+    2. **가독성 향상**: 사용자 정의 조작자를 사용하면 출력을 읽기 쉽고 가독성이 높게 만들 수 있음 예를 들어, 줄 바꿈이나 특정 문자를 삽입하여 출력을 정리할 수 있음
+    3. **상태 관리**: 사용자 정의 조작자는 스트림의 상태를 관리하는 데 사용될 수 있음 예를 들어, setw 함수는 출력 필드의 너비를 지정하며, setfill 함수는 빈 공간을 채우는 문자를 지정함
+    4. **사용자 정의 동작 추가**: 필요에 따라 사용자 정의 조작자를 통해 원하는 동작을 추가할 수 있음 이것은 특정한 문제나 도메인에 특화된 출력을 생성하는 데 유용할 수 있음
+        
+        → 아마 강의 시간에 배운 사용자 정의를 사용하는 이유는 4번이라거라 생각
+        
+
+---
+
+예제 11-13 사용자 정의 조작자 만들기
+
+- 이 문제의 핵심 포인트
+c++ 표준 조작자가 아닌 사용자가 직접 정의한 조작자를 사용하는 것
+- 이 문제에 대한 접근 방법
+사용자 정의 조작자를 사용하여 C++ 표준 조작자가 아닌 것을 컴파일 할 수 있도록 만들어야 함
+- 내가 짠 코드
+#include <iostream>
+#include <string>
+using namespace std;
+    
+    istream& question(istream& ins) {
+      cout << "거울아 거울아 누가 제일 예쁘니?";
+      return ins;
+    }
+    
+    int main() {
+      string answer;
+      cin >> question >> answer;
+      cout << "세상에서 제일 예쁜 사람은 " << answer << "입니다." << endl;
+    }
+    
+- 실행 결과
+거울아 거울아 누가 제일 예쁘니?백설공주
+세상에서 제일 예쁜 사람은 백설공주입니다
